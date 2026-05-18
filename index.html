@@ -1201,15 +1201,8 @@ let S={
   nameInput:'',roomNameInput:'',joinCodeInput:'',
   error:'',loading:false
 };
-// Auto-login from localStorage
-if(S.roomId){
-  const saved=localStorage.getItem(`takas_user_${S.roomId}`);
-  if(saved){
-    S.user=saved;
-    S.screen='app';
-    subscribeRoom(S.roomId,d=>{if(d){S.roomData=d;}render();});
-  }
-}
+// Auto-login from localStorage — init() içinde handle ediliyor
+
 
 function mut(fn){
   if(!S.roomData)return;
@@ -1223,6 +1216,16 @@ function showToast(msg){const t=g('toast');if(!t)return;t.textContent=msg;t.clas
 // ── Routing ──
 async function init(){
   if(!IS_CONFIGURED){g('root').innerHTML=rSetupNeeded();return;}
+  if(S.roomId){
+    const saved=localStorage.getItem(`takas_user_${S.roomId}`);
+    if(saved){
+      S.user=saved;
+      S.screen='app';
+      subscribeRoom(S.roomId,d=>{if(d){S.roomData=d;}render();});
+      render();
+      return;
+    }
+  }
   if(S.roomId&&S.screen==='joining'){
     // Load room and show join/auto-enter
     const data=await getRoomOnce(S.roomId);
