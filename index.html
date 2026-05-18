@@ -3,90 +3,71 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-  <meta name="description" content="Çıkartma albümü mükerrerlerini arkadaşlarınla kolayca takasla.">
   <title>Takas — Çıkartma Takas Platformu</title>
   <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
   <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#0a0f1e;color:#f1f5f9;min-height:100vh}
-#root{width:100%;min-height:100vh;display:flex;flex-direction:column}
-
-/* ── Landing ── */
-.land{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;padding:32px 20px;gap:40px;background:linear-gradient(135deg,#0a0f1e 0%,#0f172a 50%,#0a0f1e 100%)}
-.land-hero{text-align:center}
-.land-logo{font-size:56px;margin-bottom:12px}
-.land-brand{font-size:36px;font-weight:700;color:#f1f5f9;letter-spacing:-1px}
-.land-tagline{font-size:16px;color:#64748b;margin-top:8px;line-height:1.6;max-width:300px;margin-left:auto;margin-right:auto}
+#root{width:100%;min-height:100vh}
+.land{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;padding:32px 20px;gap:40px}
+.land-logo{font-size:56px;text-align:center}
+.land-brand{font-size:36px;font-weight:700;text-align:center;letter-spacing:-1px}
+.land-tagline{font-size:15px;color:#64748b;text-align:center;line-height:1.6;max-width:300px}
 .land-actions{width:100%;max-width:340px;display:flex;flex-direction:column;gap:12px}
-.btn-primary{width:100%;padding:16px;border-radius:14px;border:none;font-size:16px;font-weight:600;cursor:pointer;background:linear-gradient(135deg,#3b82f6,#1d4ed8);color:#fff;transition:opacity .15s}
+.btn-primary{width:100%;padding:16px;border-radius:14px;border:none;font-size:16px;font-weight:600;cursor:pointer;background:linear-gradient(135deg,#3b82f6,#1d4ed8);color:#fff}
 .btn-primary:active{opacity:.85}
-.btn-secondary{width:100%;padding:15px;border-radius:14px;border:2px solid #1e293b;font-size:15px;font-weight:500;cursor:pointer;background:#0f172a;color:#94a3b8;transition:all .15s}
-.btn-secondary:active{border-color:#3b82f6;color:#f1f5f9}
-.land-sep{display:flex;align-items:center;gap:12px;color:#334155;font-size:13px}
-.land-sep::before,.land-sep::after{content:'';flex:1;height:1px;background:#1e293b}
+.btn-ghost{flex:1;padding:13px;border-radius:10px;border:1px solid #1e293b;background:none;color:#64748b;font-size:14px;cursor:pointer}
+.sep{display:flex;align-items:center;gap:12px;color:#334155;font-size:13px}
+.sep::before,.sep::after{content:'';flex:1;height:1px;background:#1e293b}
 .join-row{display:flex;gap:8px;width:100%}
-.join-input{flex:1;background:#1e293b;border:1px solid #334155;border-radius:10px;padding:12px 14px;font-size:15px;color:#f1f5f9;outline:none;letter-spacing:2px;text-transform:uppercase;font-weight:600}
-.join-input::placeholder{letter-spacing:0;font-weight:400;color:#475569}
-.join-input:focus{border-color:#3b82f6}
-.join-btn{background:#3b82f6;border:none;color:#fff;padding:12px 18px;border-radius:10px;font-size:15px;font-weight:600;cursor:pointer;white-space:nowrap}
-.land-features{display:flex;gap:20px;flex-wrap:wrap;justify-content:center;max-width:340px}
-.feat{text-align:center;color:#475569;font-size:12px}
-.feat-icon{font-size:22px;margin-bottom:4px}
-
-/* ── Modal (create/join) ── */
-.overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);display:flex;align-items:flex-end;justify-content:center;z-index:100;padding:0}
-.sheet{background:#0f172a;border-radius:20px 20px 0 0;padding:28px 20px 40px;width:100%;max-width:480px}
+.code-input{flex:1;background:#1e293b;border:1px solid #334155;border-radius:10px;padding:12px 14px;font-size:16px;color:#f1f5f9;outline:none;letter-spacing:3px;text-transform:uppercase;font-weight:700}
+.code-input:focus{border-color:#3b82f6}
+.join-btn{background:#3b82f6;border:none;color:#fff;padding:12px 18px;border-radius:10px;font-size:15px;font-weight:600;cursor:pointer}
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.75);display:flex;align-items:flex-end;justify-content:center;z-index:100}
+.sheet{background:#0f172a;border-radius:20px 20px 0 0;padding:28px 20px 48px;width:100%;max-width:480px}
 .sheet-handle{width:36px;height:4px;background:#1e293b;border-radius:2px;margin:0 auto 20px}
 .sheet h2{font-size:20px;font-weight:600;margin-bottom:6px}
 .sheet p{font-size:13px;color:#64748b;margin-bottom:20px;line-height:1.6}
 .field{margin-bottom:14px}
-.field label{display:block;font-size:12px;color:#64748b;margin-bottom:6px;font-weight:500;text-transform:uppercase;letter-spacing:.5px}
+.field label{display:block;font-size:11px;color:#64748b;margin-bottom:6px;font-weight:600;text-transform:uppercase;letter-spacing:.5px}
 .field input{width:100%;background:#1e293b;border:1px solid #334155;border-radius:10px;padding:12px 14px;font-size:15px;color:#f1f5f9;outline:none}
 .field input:focus{border-color:#3b82f6}
-.field input::placeholder{color:#475569}
-.err{color:#ef4444;font-size:13px;margin-top:-8px;margin-bottom:10px}
-.sheet-actions{display:flex;gap:10px;margin-top:4px}
-.btn-ghost{flex:1;padding:13px;border-radius:10px;border:1px solid #1e293b;background:none;color:#64748b;font-size:14px;cursor:pointer}
-
-/* ── Room join screen ── */
+.sheet-actions{display:flex;gap:10px;margin-top:8px}
+.err{color:#ef4444;font-size:13px;margin-bottom:10px}
 .join-screen{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;padding:32px 20px;gap:24px}
 .room-badge{background:#1e293b;border-radius:16px;padding:20px 24px;text-align:center;width:100%;max-width:340px}
-.room-badge-label{font-size:11px;color:#64748b;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px}
+.room-badge-lbl{font-size:11px;color:#64748b;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px}
 .room-badge-name{font-size:22px;font-weight:600}
-.room-badge-code{font-size:13px;color:#64748b;margin-top:4px;letter-spacing:2px}
-.member-pills{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;max-width:340px}
+.room-badge-code{font-size:13px;color:#475569;margin-top:4px;letter-spacing:2px}
+.mpills{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;max-width:340px}
 .mpill{font-size:12px;padding:4px 12px;border-radius:20px;color:#fff;font-weight:500}
-
-/* ── App ── */
 .app{display:flex;flex-direction:column;height:100vh;max-height:100dvh;background:#0f172a;position:relative;max-width:480px;margin:0 auto;width:100%}
 .header{padding:12px 16px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
-.header-left .hsub{font-size:11px;opacity:.7}
-.header-left .hname{font-size:17px;font-weight:500}
+.hsub{font-size:11px;opacity:.7}
+.hname{font-size:17px;font-weight:500}
 .hright{display:flex;gap:8px;align-items:center}
 .bsm{background:rgba(255,255,255,.18);border:none;color:#fff;padding:6px 12px;border-radius:20px;font-size:12px;cursor:pointer}
 .sdot{width:8px;height:8px;border-radius:50%;background:#22c55e;opacity:0;transition:opacity .4s;flex-shrink:0}
 .sdot.on{opacity:1}
-.sync-bar{height:2px;background:#1e293b;flex-shrink:0;overflow:hidden}
-.sync-fill{height:100%;background:linear-gradient(90deg,#3b82f6,#8b5cf6);width:0;transition:width .3s}
-.sync-fill.loading{animation:loading 1.5s ease-in-out infinite}
-@keyframes loading{0%{width:0;margin-left:0}50%{width:60%;margin-left:20%}100%{width:0;margin-left:100%}}
+.room-bar{display:flex;align-items:center;gap:8px;padding:0 16px 8px;flex-shrink:0;overflow-x:auto}
+.room-bar::-webkit-scrollbar{display:none}
+.rcode{font-size:10px;background:#1e293b;color:#64748b;padding:3px 10px;border-radius:20px;letter-spacing:1.5px;font-weight:700;flex-shrink:0;cursor:pointer}
+.mdot{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff;flex-shrink:0;border:2px solid #0f172a}
 .content{flex:1;overflow:hidden;display:flex;flex-direction:column;min-height:0}
 .scroll{flex:1;overflow-y:auto;padding:10px 12px;display:flex;flex-direction:column;gap:8px;min-height:0}
-.bnav{display:flex;border-top:1px solid rgba(255,255,255,.08);background:#0f172a;flex-shrink:0;padding-bottom:env(safe-area-inset-bottom)}
-.nb{flex:1;display:flex;flex-direction:column;align-items:center;padding:8px 4px;gap:3px;background:none;border:none;color:#475569;cursor:pointer;position:relative;font-size:10px}
+.bnav{display:flex;border-top:1px solid rgba(255,255,255,.06);background:#0f172a;flex-shrink:0;padding-bottom:env(safe-area-inset-bottom)}
+.nb{flex:1;display:flex;flex-direction:column;align-items:center;padding:8px 2px;gap:2px;background:none;border:none;color:#475569;cursor:pointer;position:relative;font-size:9px}
 .nb.on{color:#f1f5f9}
-.ni{font-size:20px}
-.bdg{position:absolute;top:4px;right:16%;background:#ef4444;color:#fff;font-size:9px;border-radius:50%;width:15px;height:15px;display:flex;align-items:center;justify-content:center;font-weight:600}
-
-/* ── Cards ── */
+.ni{font-size:19px}
+.bdg{position:absolute;top:4px;right:12%;background:#ef4444;color:#fff;font-size:9px;border-radius:50%;width:15px;height:15px;display:flex;align-items:center;justify-content:center;font-weight:700}
 .card{background:#1e293b;border-radius:12px;padding:12px;display:flex;align-items:center;gap:10px}
 .cflag{font-size:22px;flex-shrink:0}
 .cinfo{flex:1;min-width:0}
 .cid{font-weight:500;font-size:13px;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
 .cnm{font-size:11px;color:#94a3b8;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:2px}
 .fb{font-size:9px;background:rgba(250,204,21,.15);color:#fbbf24;padding:1px 5px;border-radius:4px}
-.qb{font-size:9px;background:rgba(255,255,255,.08);color:#94a3b8;padding:1px 5px;border-radius:4px}
+.qbadge{font-size:9px;background:rgba(255,255,255,.08);color:#94a3b8;padding:1px 5px;border-radius:4px}
 .otag{font-size:10px;padding:2px 8px;border-radius:10px;color:#fff;margin-top:4px;display:inline-block;font-weight:500}
 .cbtn{flex-shrink:0;padding:8px 12px;border-radius:10px;border:none;font-size:11px;font-weight:600;cursor:pointer}
 .cbtn.u{background:#1e3a5f;color:#93c5fd}
@@ -102,17 +83,18 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .mh{display:flex;align-items:center;gap:10px}
 .qc{display:flex;align-items:center;gap:8px;flex-shrink:0}
 .qbtn{width:30px;height:30px;border-radius:50%;background:#334155;border:none;color:#e2e8f0;cursor:pointer;font-size:20px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.qbtn:active{background:#475569}
 .qv{font-weight:600;min-width:22px;text-align:center;font-size:15px}
 .cr{display:flex;flex-wrap:wrap;gap:4px;margin-top:8px}
 .cc{font-size:10px;padding:2px 8px;border-radius:10px;color:#fff;font-weight:500}
-.rc{background:#1e293b;border-radius:12px;padding:12px}
-.rh{display:flex;align-items:center;gap:10px;margin-bottom:10px}
-.clrow{display:flex;align-items:center;gap:6px;margin-bottom:6px}
-.cln{flex:1;font-size:12px;padding:4px 10px;border-radius:10px;color:#fff;font-weight:500}
-.rct{font-size:11px;color:#475569;flex-shrink:0}
-.gb{background:#14532d;color:#86efac;border:none;font-size:11px;padding:6px 10px;border-radius:8px;cursor:pointer;font-weight:600;flex-shrink:0}
-.gs{background:#1e293b;color:#64748b;border:none;font-size:11px;padding:6px 10px;border-radius:8px;cursor:pointer;flex-shrink:0}
+.pcard{background:#1e293b;border-radius:12px;padding:12px}
+.prow{display:flex;align-items:center;gap:8px;margin-top:10px}
+.pname{flex:1;font-size:12px;padding:5px 10px;border-radius:10px;color:#fff;font-weight:500}
+.gb{background:#14532d;color:#86efac;border:none;font-size:11px;padding:7px 12px;border-radius:8px;cursor:pointer;font-weight:600;flex-shrink:0}
+.gs{background:#1e293b;color:#475569;border:none;font-size:11px;padding:7px 12px;border-radius:8px;cursor:pointer;flex-shrink:0}
+.status-pill{font-size:10px;padding:3px 10px;border-radius:20px;font-weight:600;flex-shrink:0}
+.status-wait{background:#1e293b;color:#64748b}
+.status-ready{background:#1c3529;color:#4ade80}
+.status-done{background:#1e3a5f;color:#93c5fd}
 .modal{position:fixed;inset:0;background:#0f172a;display:flex;flex-direction:column;z-index:10;max-width:480px;margin:0 auto}
 .modh{display:flex;align-items:center;gap:10px;padding:12px 16px;border-bottom:1px solid rgba(255,255,255,.06);flex-shrink:0}
 .modx{background:none;border:none;color:#64748b;font-size:22px;cursor:pointer;width:32px;height:32px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
@@ -123,25 +105,20 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .miid{font-weight:500;font-size:13px}
 .minm{font-size:11px;color:#475569;margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .ar{display:flex;align-items:center;gap:6px;flex-shrink:0}
-.empty{text-align:center;color:#334155;padding:48px 20px;font-size:13px;line-height:2}
+.empty{text-align:center;color:#334155;padding:48px 20px;font-size:13px;line-height:2.2}
+.sec-label{font-size:10px;color:#475569;font-weight:700;text-transform:uppercase;letter-spacing:.8px;padding:4px 0 2px}
 .ls{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;gap:12px;color:#334155;font-size:14px}
-.room-info-bar{display:flex;align-items:center;gap:8px;padding:0 16px 10px;flex-shrink:0;overflow-x:auto}
-.room-info-bar::-webkit-scrollbar{display:none}
-.room-code-badge{font-size:10px;background:#1e293b;color:#64748b;padding:3px 10px;border-radius:20px;letter-spacing:1.5px;font-weight:600;flex-shrink:0;cursor:pointer}
-.room-code-badge:active{background:#334155}
-.member-dot{width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff;flex-shrink:0;border:2px solid #0f172a}
-.copied-toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:#22c55e;color:#fff;padding:8px 18px;border-radius:20px;font-size:13px;font-weight:500;opacity:0;transition:opacity .3s;pointer-events:none;z-index:200;white-space:nowrap}
-.copied-toast.show{opacity:1}
+.toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%);background:#22c55e;color:#fff;padding:8px 18px;border-radius:20px;font-size:13px;font-weight:500;opacity:0;transition:opacity .3s;pointer-events:none;z-index:200;white-space:nowrap}
+.toast.on{opacity:1}
   </style>
 </head>
 <body>
 <div id="root"><div class="ls"><div style="font-size:48px">⚽</div><div>Yükleniyor...</div></div></div>
-<div class="copied-toast" id="toast">📋 Link kopyalandı!</div>
+<div class="toast" id="toast"></div>
 
 <script>
 // ================================================================
-//  FIREBASE AYARLARI — console.firebase.google.com
-//  Proje Ayarları → Web → Config
+//  FIREBASE AYARLARI
 // ================================================================
 const FIREBASE_CONFIG = {
   apiKey: "AIzaSyDdw-ztlaKD3uMIZfnhSmhASd7yXQWMhOg",
@@ -1139,7 +1116,6 @@ FWC17 Italy 2006 WC History FOIL
 FWC18 Germany 2014 WC History FOIL
 FWC19 Argentina 2022 WC History FOIL`;
 
-// ── Parse stickers ──
 const ALL=(()=>RAW.trim().split('\n').map(l=>{
   const f=l.includes(' FOIL');
   const c=l.replace(/ FOIL$/,'').trim();
@@ -1152,275 +1128,241 @@ const ALL=(()=>RAW.trim().split('\n').map(l=>{
 const SM=Object.fromEntries(ALL.map(s=>[s.id,s]));
 const AT=[...new Set(ALL.map(s=>s.tc))];
 
-// ── Helpers ──
-function genRoomId(){
+// ── Yardımcılar ──
+function genId(){
   const ch='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
   return Array.from({length:6},()=>ch[Math.floor(Math.random()*ch.length)]).join('');
 }
-function userColor(name,members){
+function uColor(name,members){
   const idx=Object.keys(members||{}).sort().indexOf(name);
   return PALETTE[Math.max(0,idx)%PALETTE.length];
 }
-function initials(name){return(name||'?').split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();}
+function initials(n){return(n||'?').split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();}
 const g=id=>document.getElementById(id);
+function showToast(msg,ok=true){
+  const t=g('toast');if(!t)return;
+  t.textContent=msg;
+  t.style.background=ok?'#22c55e':'#ef4444';
+  t.classList.add('on');
+  setTimeout(()=>t.classList.remove('on'),2500);
+}
+function flashSave(){const d=g('sd');if(d){d.classList.add('on');setTimeout(()=>d.classList.remove('on'),1500);}}
 
 // ── Firebase ──
-const IS_CONFIGURED=!Object.values(FIREBASE_CONFIG).some(v=>v.startsWith('BURAYA'));
-let db=null;
-if(IS_CONFIGURED){
-  try{firebase.initializeApp(FIREBASE_CONFIG);db=firebase.database();}catch(e){console.error(e);}
-}
+firebase.initializeApp(FIREBASE_CONFIG);
+const db=firebase.database();
 
 let roomUnsub=null;
 function subscribeRoom(roomId,cb){
   if(roomUnsub)roomUnsub();
-  if(!db)return;
-  const ref=db.ref(`rooms/${roomId}`);
-  ref.on('value',snap=>{cb(snap.val());});
+  const ref=db.ref('rooms/'+roomId);
+  ref.on('value',snap=>cb(snap.val()));
   roomUnsub=()=>ref.off();
 }
 function saveRoom(roomId,data){
-  if(!db)return;
-  db.ref(`rooms/${roomId}`).set(data).catch(console.error);
+  db.ref('rooms/'+roomId).set(data).catch(console.error);
 }
-async function getRoomOnce(roomId){
-  if(!db)return null;
-  const snap=await db.ref(`rooms/${roomId}`).once('value');
+async function getRoom(roomId){
+  const snap=await db.ref('rooms/'+roomId).once('value');
   return snap.val();
 }
 
 // ── State ──
 const params=new URLSearchParams(location.search);
 let S={
-  screen: params.get('room')?'joining':'landing',
-  roomId: params.get('room')||null,
-  roomData: null,
-  user: null,
-  tab:'market',tf:'ALL',srch:'',modal:false,ms:'',
-  overlay:null, // 'create'|'joincode'
-  nameInput:'',roomNameInput:'',joinCodeInput:'',
+  screen:'landing',
+  roomId:params.get('room')||null,
+  roomData:null,
+  user:null,
+  tab:'market',tf:'ALL',srch:'',
+  modal:false,ms:'',
+  overlay:null,
+  nameInput:'',roomNameInput:'',
   error:'',loading:false
 };
-// Auto-login from localStorage — init() içinde handle ediliyor
-
 
 function mut(fn){
   if(!S.roomData)return;
-  S.roomData=fn(S.roomData);
+  S.roomData=fn(JSON.parse(JSON.stringify(S.roomData)));
   saveRoom(S.roomId,S.roomData);
   flashSave();
 }
-function confirmReceived(roomId, sid, from, to){
-  if(!S.roomData)return;
-  const d=JSON.parse(JSON.stringify(S.roomData));
-  const pending=d.pending||{};
-  const key=`${sid}::${from}::${to}`;
-  delete pending[key];
-  if(!d.history)d.history=[];
-  d.history.push({sid,from,to,at:Date.now()});
-  d.pending=pending;
-  S.roomData=d;
-  saveRoom(roomId,d);
-  flashSave();
-  render();
-}
-function flashSave(){const d=g('sd');if(d){d.classList.add('on');setTimeout(()=>d.classList.remove('on'),1500);}}
-function showToast(msg){const t=g('toast');if(!t)return;t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2000);}
+function getColor(name){return uColor(name,S.roomData?.members||{});}
 
-// ── Routing ──
+// ── Init ──
 async function init(){
-  if(!IS_CONFIGURED){g('root').innerHTML=rSetupNeeded();return;}
   if(S.roomId){
-    const saved=localStorage.getItem(`takas_user_${S.roomId}`);
+    const saved=localStorage.getItem('takas_user_'+S.roomId);
     if(saved){
-      S.user=saved;
-      S.screen='app';
-      subscribeRoom(S.roomId,d=>{if(d){S.roomData=d;}render();});
-      render();
-      return;
+      const data=await getRoom(S.roomId);
+      if(data&&data.members&&data.members[saved]){
+        S.user=saved;S.roomData=data;S.screen='app';
+        subscribeRoom(S.roomId,d=>{if(d){S.roomData=d;}render();});
+        render();return;
+      } else {
+        localStorage.removeItem('takas_user_'+S.roomId);
+      }
     }
-  }
-  if(S.roomId&&S.screen==='joining'){
-    // Load room and show join/auto-enter
-    const data=await getRoomOnce(S.roomId);
+    S.screen='joining';
+    const data=await getRoom(S.roomId);
     if(!data){S.screen='landing';S.roomId=null;S.error='Oda bulunamadı.';render();return;}
     S.roomData=data;
-    if(S.user&&data.members&&data.members[S.user]){
-      S.screen='app';
-      subscribeRoom(S.roomId,d=>{if(d){S.roomData=d;}render();});
-    }
   }
   render();
 }
 
-// ── Render dispatcher ──
+// ── Render ──
 function render(){
   const root=g('root');
-  switch(S.screen){
-    case 'landing': root.innerHTML=rLanding();aLanding();break;
-    case 'joining': root.innerHTML=rJoining();aJoining();break;
-    case 'app':     root.innerHTML=rApp();aApp();break;
-  }
+  if(S.screen==='landing'){root.innerHTML=rLanding();aLanding();}
+  else if(S.screen==='joining'){root.innerHTML=rJoining();aJoining();}
+  else if(S.screen==='app'){root.innerHTML=rApp();aApp();}
 }
 
-// ── Landing ──
+// ────────────────────────────────────────
+// LANDING
+// ────────────────────────────────────────
 function rLanding(){
   return`<div class="land">
-    <div class="land-hero">
+    <div>
       <div class="land-logo">⚽</div>
       <div class="land-brand">Takas</div>
-      <div class="land-tagline">Çıkartma mükerrerlerini arkadaşlarınla kolayca takasla</div>
+      <div class="land-tagline" style="margin-top:8px">Çıkartma mükerrerlerini arkadaşlarınla kolayca takasla</div>
     </div>
     <div class="land-actions">
       ${S.error?`<div class="err" style="text-align:center">${S.error}</div>`:''}
       <button class="btn-primary" id="createBtn">+ Yeni Oda Oluştur</button>
-      <div class="land-sep">ya da</div>
+      <div class="sep">ya da</div>
       <div class="join-row">
-        <input class="join-input" id="codeInp" placeholder="Oda kodu" maxlength="6">
-        <button class="join-btn" id="joinCodeBtn">Katıl →</button>
+        <input class="code-input" id="codeInp" placeholder="Oda kodu" maxlength="6">
+        <button class="join-btn" id="joinBtn">Katıl →</button>
       </div>
     </div>
-    <div class="land-features">
-      <div class="feat"><div class="feat-icon">🔗</div>Link paylaş</div>
-      <div class="feat"><div class="feat-icon">⚡</div>Gerçek zamanlı</div>
-      <div class="feat"><div class="feat-icon">👥</div>10 kişiye kadar</div>
-      <div class="feat"><div class="feat-icon">🆓</div>Tamamen ücretsiz</div>
-    </div>
-    ${S.overlay==='create'?rCreateOverlay():''}
-  </div>`;
-}
-function rCreateOverlay(){
-  return`<div class="overlay" id="overlay">
-    <div class="sheet">
-      <div class="sheet-handle"></div>
-      <h2>Yeni Oda Oluştur</h2>
-      <p>Arkadaşlarını davet etmek için bir oda oluştur.</p>
-      <div class="field"><label>Senin adın *</label><input id="nameI" placeholder="Adını gir" value="${S.nameInput}" maxlength="20"></div>
-      <div class="field"><label>Oda adı (opsiyonel)</label><input id="roomNameI" placeholder="örn. Okul Grubu" value="${S.roomNameInput}" maxlength="30"></div>
-      ${S.error?`<div class="err">${S.error}</div>`:''}
-      <div class="sheet-actions">
-        <button class="btn-ghost" id="cancelBtn">İptal</button>
-        <button class="btn-primary" style="flex:2" id="confirmCreateBtn">${S.loading?'Oluşturuluyor...':'Odayı Oluştur'}</button>
+    ${S.overlay==='create'?`<div class="overlay" id="ov">
+      <div class="sheet">
+        <div class="sheet-handle"></div>
+        <h2>Yeni Oda Oluştur</h2>
+        <p>Arkadaşlarını davet etmek için bir oda kur.</p>
+        <div class="field"><label>Senin adın *</label><input id="nameI" placeholder="Adını gir" maxlength="20" value="${S.nameInput}"></div>
+        <div class="field"><label>Oda adı (opsiyonel)</label><input id="rnameI" placeholder="örn. Okul Grubu" maxlength="30" value="${S.roomNameInput}"></div>
+        ${S.error?`<div class="err">${S.error}</div>`:''}
+        <div class="sheet-actions">
+          <button class="btn-ghost" id="cancelBtn">İptal</button>
+          <button class="btn-primary" style="flex:2" id="confirmBtn">${S.loading?'Oluşturuluyor...':'Odayı Oluştur'}</button>
+        </div>
       </div>
-    </div>
+    </div>`:''}
   </div>`;
 }
 function aLanding(){
   g('createBtn')&&(g('createBtn').onclick=()=>{S.overlay='create';S.error='';render();setTimeout(()=>g('nameI')&&g('nameI').focus(),80);});
-  g('joinCodeBtn')&&(g('joinCodeBtn').onclick=()=>{
+  g('joinBtn')&&(g('joinBtn').onclick=()=>{
     const code=(g('codeInp').value||'').trim().toUpperCase();
-    if(code.length!==6){S.error='6 haneli oda kodunu gir';render();return;}
-    S.error='';
-    history.pushState({},'',`?room=${code}`);
-    S.roomId=code;S.screen='joining';S.user=null;
+    if(code.length!==6){S.error='6 haneli kodu gir';render();return;}
+    history.pushState({},'','?room='+code);
+    S.roomId=code;S.screen='joining';S.error='';
     init();
   });
   g('codeInp')&&(g('codeInp').oninput=e=>{g('codeInp').value=e.target.value.toUpperCase();});
-  g('codeInp')&&(g('codeInp').onkeydown=e=>{if(e.key==='Enter')g('joinCodeBtn').click();});
-  g('overlay')&&(g('overlay').onclick=e=>{if(e.target===g('overlay')){S.overlay=null;render();}});
+  g('codeInp')&&(g('codeInp').onkeydown=e=>{if(e.key==='Enter')g('joinBtn').click();});
+  g('ov')&&(g('ov').onclick=e=>{if(e.target===g('ov')){S.overlay=null;render();}});
   g('cancelBtn')&&(g('cancelBtn').onclick=()=>{S.overlay=null;S.error='';render();});
-  g('nameI')&&(g('nameI').oninput=e=>{S.nameInput=e.target.value;});
-  g('roomNameI')&&(g('roomNameI').oninput=e=>{S.roomNameInput=e.target.value;});
-  g('confirmCreateBtn')&&(g('confirmCreateBtn').onclick=async()=>{
-    const name=(S.nameInput||'').trim();
+  g('nameI')&&(g('nameI').oninput=e=>S.nameInput=e.target.value);
+  g('rnameI')&&(g('rnameI').oninput=e=>S.roomNameInput=e.target.value);
+  g('confirmBtn')&&(g('confirmBtn').onclick=async()=>{
+    const name=S.nameInput.trim();
     if(!name){S.error='İsim gerekli';render();setTimeout(()=>g('nameI')&&g('nameI').focus(),50);return;}
     S.loading=true;S.error='';render();
-    const roomId=genRoomId();
-    const roomData={
-      name:S.roomNameInput.trim()||`${name}'in Odası`,
-      createdBy:name,
-      createdAt:Date.now(),
+    const roomId=genId();
+    const data={
+      name:S.roomNameInput.trim()||name+"'in Odası",
+      createdBy:name,createdAt:Date.now(),
       members:{[name]:Date.now()},
-      duplicates:{},claims:{},received:{}
+      duplicates:{},claims:{},trades:{},history:[]
     };
     try{
-      await db.ref(`rooms/${roomId}`).set(roomData);
-      localStorage.setItem(`takas_user_${roomId}`,name);
-      S.roomId=roomId;S.roomData=roomData;S.user=name;S.screen='app';
-      S.overlay=null;S.loading=false;S.nameInput='';S.roomNameInput='';
-      history.pushState({},'',`?room=${roomId}`);
+      await db.ref('rooms/'+roomId).set(data);
+      localStorage.setItem('takas_user_'+roomId,name);
+      S.roomId=roomId;S.roomData=data;S.user=name;
+      S.screen='app';S.overlay=null;S.loading=false;S.nameInput='';S.roomNameInput='';
+      history.pushState({},'','?room='+roomId);
       subscribeRoom(roomId,d=>{if(d){S.roomData=d;}render();});
       render();
-    }catch(e){S.error='Bir hata oluştu, tekrar dene.';S.loading=false;render();}
+    }catch(e){S.error='Hata oluştu, tekrar dene.';S.loading=false;render();}
   });
 }
 
-// ── Joining screen ──
+// ────────────────────────────────────────
+// JOIN SCREEN
+// ────────────────────────────────────────
 function rJoining(){
-  const rd=S.roomData;
-  const members=rd?.members||{};
-  const memberNames=Object.keys(members);
+  const members=S.roomData?.members||{};
   return`<div class="join-screen">
     <div style="font-size:48px">⚽</div>
     <div class="room-badge">
-      <div class="room-badge-label">Odaya davet edildiniz</div>
-      <div class="room-badge-name">${rd?.name||'Yükleniyor...'}</div>
-      <div class="room-badge-code">${S.roomId||''}</div>
+      <div class="room-badge-lbl">Odaya davet edildiniz</div>
+      <div class="room-badge-name">${S.roomData?.name||'Yükleniyor...'}</div>
+      <div class="room-badge-code">${S.roomId}</div>
     </div>
-    ${memberNames.length>0?`<div class="member-pills">
-      ${memberNames.map(n=>`<span class="mpill" style="background:${userColor(n,members)}">${n}</span>`).join('')}
-      <span class="mpill" style="background:#1e293b;color:#64748b">${memberNames.length} üye</span>
+    ${Object.keys(members).length>0?`<div class="mpills">
+      ${Object.keys(members).map(n=>`<span class="mpill" style="background:${uColor(n,members)}">${n}</span>`).join('')}
     </div>`:''}
     <div style="width:100%;max-width:340px">
-      <div class="field"><label style="font-size:12px;color:#64748b;text-transform:uppercase;letter-spacing:.5px;font-weight:500;display:block;margin-bottom:8px">Adın</label>
-        <input class="si" id="joinNameI" placeholder="Adını gir" maxlength="20" style="font-size:16px;border:1px solid #334155;border-radius:12px;padding:14px" autofocus>
+      <div class="field">
+        <label style="font-size:11px;color:#64748b;font-weight:600;text-transform:uppercase;letter-spacing:.5px;display:block;margin-bottom:8px">Adın</label>
+        <input class="si" id="joinNameI" placeholder="Adını gir" maxlength="20" style="font-size:16px;border:1px solid #334155;border-radius:12px;padding:14px">
       </div>
-      ${S.error?`<div class="err" style="margin-top:4px">${S.error}</div>`:''}
-      <button class="btn-primary" id="joinBtn" style="margin-top:12px">${S.loading?'Katılınıyor...':'Odaya Katıl →'}</button>
+      ${S.error?`<div class="err">${S.error}</div>`:''}
+      <button class="btn-primary" id="joinRoomBtn" style="margin-top:12px">${S.loading?'Katılınıyor...':'Odaya Katıl →'}</button>
     </div>
   </div>`;
 }
 function aJoining(){
-  g('joinNameI')&&(g('joinNameI').onkeydown=e=>{if(e.key==='Enter')g('joinBtn')&&g('joinBtn').click();});
-  g('joinBtn')&&(g('joinBtn').onclick=async()=>{
+  g('joinNameI')&&(g('joinNameI').onkeydown=e=>{if(e.key==='Enter')g('joinRoomBtn')&&g('joinRoomBtn').click();});
+  setTimeout(()=>g('joinNameI')&&g('joinNameI').focus(),100);
+  g('joinRoomBtn')&&(g('joinRoomBtn').onclick=async()=>{
     const name=(g('joinNameI').value||'').trim();
     if(!name){S.error='İsim gerekli';render();return;}
     const existing=S.roomData?.members||{};
-    if(existing[name]&&!localStorage.getItem(`takas_user_${S.roomId}`)){
-      S.error='Bu isim zaten kullanımda, başka bir isim dene';render();return;
-    }
+    if(existing[name]){S.error='Bu isim kullanımda, başka bir isim dene';render();return;}
     S.loading=true;S.error='';render();
     try{
-      await db.ref(`rooms/${S.roomId}/members/${name}`).set(Date.now());
-      localStorage.setItem(`takas_user_${S.roomId}`,name);
-      S.user=name;S.screen='app';S.loading=false;
-      const fresh=await getRoomOnce(S.roomId);
-      S.roomData=fresh;
+      await db.ref('rooms/'+S.roomId+'/members/'+name).set(Date.now());
+      localStorage.setItem('takas_user_'+S.roomId,name);
+      S.user=name;S.loading=false;
+      const fresh=await getRoom(S.roomId);
+      S.roomData=fresh;S.screen='app';
       subscribeRoom(S.roomId,d=>{if(d){S.roomData=d;}render();});
       render();
-    }catch(e){S.error='Bir hata oluştu';S.loading=false;render();}
+    }catch(e){S.error='Hata oluştu';S.loading=false;render();}
   });
 }
 
-// ── App ──
-function pnd(){
-  if(!S.roomData||!S.user)return 0;
-  return Object.keys(S.roomData.claims||{}).filter(k=>{
-    const[,o]=k.split('::');
-    return o===S.user&&(S.roomData.claims[k]||[]).length>0;
+// ────────────────────────────────────────
+// APP
+// ────────────────────────────────────────
+function pendingForMe(){
+  // Talepler: benden onay bekleyen (ben vereceğim)
+  const claims=S.roomData?.claims||{};
+  return Object.keys(claims).filter(k=>{
+    const[,owner]=k.split('::');
+    return owner===S.user&&(claims[k]||[]).length>0;
   }).length;
 }
-
-function pnd2(){
-  if(!S.roomData||!S.user)return 0;
-  const pending=S.roomData.pending||{};
-  return Object.keys(pending).filter(k=>{
-    const[,from,to]=k.split('::');
-    return to===S.user;
-  }).length;
+function tradePendingForMe(){
+  // Bekleyenler: bana gönderildi ama ben teslim almadım
+  const trades=S.roomData?.trades||{};
+  return Object.values(trades).filter(t=>t.to===S.user&&t.status==='sent').length;
 }
-  
-function getColor(name){return userColor(name,S.roomData?.members||{});}
 
 function rApp(){
-  const n=pnd();
+  const n1=pendingForMe();
+  const n2=tradePendingForMe();
   const members=S.roomData?.members||{};
-  const memberList=Object.keys(members);
-  const roomLink=`${location.origin}${location.pathname}?room=${S.roomId}`;
   return`<div class="app">
     <div class="header" style="background:${getColor(S.user)}">
-      <div class="header-left">
-        <div class="hsub">${S.roomData?.name||'Takas Odası'}</div>
+      <div>
+        <div class="hsub">${S.roomData?.name||''}</div>
         <div class="hname">${S.user}</div>
       </div>
       <div class="hright">
@@ -1429,175 +1371,190 @@ function rApp(){
         <button class="bsm" id="outBtn">Çıkış</button>
       </div>
     </div>
-    <div class="sync-bar"><div class="sync-fill loading" id="syncFill"></div></div>
-    <div class="room-info-bar">
-      <span class="room-code-badge" id="codeClick" title="Kopyala">${S.roomId}</span>
-      ${memberList.map(n=>`<div class="member-dot" style="background:${getColor(n)}" title="${n}">${initials(n)}</div>`).join('')}
-      <span style="font-size:11px;color:#475569;flex-shrink:0">${memberList.length} üye</span>
+    <div class="room-bar">
+      <span class="rcode" id="codeBtn">${S.roomId}</span>
+      ${Object.keys(members).map(n=>`<div class="mdot" style="background:${getColor(n)}" title="${n}">${initials(n)}</div>`).join('')}
     </div>
     <div class="content">
       ${S.tab==='market'?rMarket():''}
       ${S.tab==='mine'?rMine():''}
-      ${S.tab==='req'?rReq():''}
-${S.tab==='pending'?rPending():''}
+      ${S.tab==='claims'?rClaims():''}
+      ${S.tab==='trades'?rTrades():''}
     </div>
     <div class="bnav">
-    const n2=pnd2();
-${[{id:'market',ic:'🏪',lb:'Pazar'},{id:'mine',ic:'📦',lb:'Fazlalıklarım'},{id:'req',ic:'🔔',lb:'Talepler',bd:n},{id:'pending',ic:'🤝',lb:'Bekleyenler',bd:n2}].map(
-        <button class="nb${S.tab===t.id?' on':''}" data-tab="${t.id}">
-          <span class="ni">${t.ic}</span><span>${t.lb}</span>
-          ${(t.bd||0)>0?`<span class="bdg">${t.bd}</span>`:''}
-        </button>`).join('')}
+      ${[
+        {id:'market',ic:'🏪',lb:'Pazar'},
+        {id:'mine',ic:'📦',lb:'Fazlalık'},
+        {id:'claims',ic:'🔔',lb:'Talepler',bd:n1},
+        {id:'trades',ic:'🤝',lb:'Takaslar',bd:n2}
+      ].map(t=>`<button class="nb${S.tab===t.id?' on':''}" data-tab="${t.id}">
+        <span class="ni">${t.ic}</span><span>${t.lb}</span>
+        ${(t.bd||0)>0?`<span class="bdg">${t.bd}</span>`:''}
+      </button>`).join('')}
     </div>
     ${S.modal?rModal():''}
   </div>`;
 }
 
-function getMI(){
+// ── PAZAR ──
+function getMarketItems(){
   const d=S.roomData,u=S.user,items=[];
-  for(const[ow,st]of Object.entries(d.duplicates||{})){
-    if(ow===u)continue;
+  for(const[owner,st]of Object.entries(d.duplicates||{})){
+    if(owner===u)continue;
     for(const[sid,qty]of Object.entries(st)){
-      if(qty<=0)continue;const s=SM[sid];if(!s)continue;
-      const key=`${sid}::${ow}`,cl=d.claims?.[key]||[];
-      items.push({ow,sid,qty,s,claimed:cl.includes(u),cc:cl.length});
+      if(qty<=0)continue;
+      const s=SM[sid];if(!s)continue;
+      const key=sid+'::'+owner;
+      const cl=d.claims?.[key]||[];
+      items.push({owner,sid,qty,s,claimed:cl.includes(u),cc:cl.length});
     }
   }
   return items;
 }
-function rMI(){
-  const items=getMI();
+function rMarketList(){
+  const items=getMarketItems();
   const f=items.filter(i=>{
     if(S.tf!=='ALL'&&i.s.tc!==S.tf)return false;
     if(S.srch){const q=S.srch.toLowerCase();return i.sid.toLowerCase().includes(q)||i.s.nm.toLowerCase().includes(q);}
     return true;
   });
-  if(!f.length)return`<div class="empty">${!items.length?'Henüz kimse fazlalık eklemedi 🎴<br><small>Fazlalıklarım sekmesinden başla</small>':'Sonuç bulunamadı 🔍'}</div>`;
+  if(!f.length)return`<div class="empty">${!items.length?'Henüz kimse fazlalık eklemedi 🎴<br>Fazlalık sekmesinden ekle':'Sonuç bulunamadı'}</div>`;
   return f.map(i=>`<div class="card">
     <div class="cflag">${TF[i.s.tc]||'🎴'}</div>
     <div class="cinfo">
-      <div class="cid">${i.sid}${i.s.f?'<span class="fb">✨FOIL</span>':''}${i.qty>1?`<span class="qb">x${i.qty}</span>`:''}</div>
+      <div class="cid">${i.sid}${i.s.f?'<span class="fb">✨FOIL</span>':''}${i.qty>1?`<span class="qbadge">x${i.qty}</span>`:''}</div>
       <div class="cnm">${i.s.nm}</div>
-      <span class="otag" style="background:${getColor(i.ow)}">${i.ow}${i.cc>0?` · ${i.cc} talep`:''}</span>
+      <span class="otag" style="background:${getColor(i.owner)}">${i.owner}${i.cc>0?' · '+i.cc+' talep':''}</span>
     </div>
-    <button class="cbtn ${i.claimed?'c':'u'}" data-cl="${i.sid}" data-ow="${i.ow}">${i.claimed?'✓ Talep':'İstiyorum'}</button>
+    <button class="cbtn ${i.claimed?'c':'u'}" data-cl="${i.sid}" data-ow="${i.owner}">${i.claimed?'✓ Talep':'İstiyorum'}</button>
   </div>`).join('');
 }
 function rMarket(){
-  const items=getMI(),tw=['ALL',...AT.filter(t=>items.some(i=>i.s.tc===t))];
+  const items=getMarketItems();
+  const tw=['ALL',...AT.filter(t=>items.some(i=>i.s.tc===t))];
   return`<div class="sw"><input class="si" id="srchI" placeholder="Ara... (BRA14, Messi, TUR...)" value="${S.srch}"></div>
-    <div class="chips">${tw.map(t=>`<button class="chip${S.tf===t?' on':''}" data-tf="${t}">${t==='ALL'?'Tümü':`${TF[t]||''}${t}`}</button>`).join('')}</div>
-    <div class="scroll" id="mktL">${rMI()}</div>`;
+    <div class="chips">${tw.map(t=>`<button class="chip${S.tf===t?' on':''}" data-tf="${t}">${t==='ALL'?'Tümü':(TF[t]||'')+t}</button>`).join('')}</div>
+    <div class="scroll" id="mktL">${rMarketList()}</div>`;
 }
+
+// ── FAZLALIK ──
 function rMine(){
   const d=S.roomData,u=S.user,mine=d.duplicates?.[u]||{};
   const items=Object.entries(mine).filter(([,q])=>q>0).map(([sid,qty])=>{
     const s=SM[sid];if(!s)return null;
-    const cl=[...(d.claims?.[`${sid}::${u}`]||[])].sort((a,b)=>(d.received?.[a]||0)-(d.received?.[b]||0));
+    const cl=[...(d.claims?.[sid+'::'+u]||[])].sort((a,b)=>(d.received?.[a]||0)-(d.received?.[b]||0));
     return{sid,qty,s,cl};
   }).filter(Boolean);
   return`<div style="display:flex;align-items:center;justify-content:space-between;padding:10px 12px 4px;flex-shrink:0">
-    <span style="font-size:12px;color:#64748b">${items.length} mükerrer çıkartma</span>
+    <span style="font-size:12px;color:#64748b">${items.length} mükerrer</span>
     <button id="addBtn" style="background:#f1f5f9;color:#0f172a;border:none;padding:8px 16px;border-radius:10px;font-size:13px;font-weight:600;cursor:pointer">+ Ekle</button>
   </div>
-  <div class="scroll">${!items.length
-    ?`<div class="empty">Henüz mükerrer eklemediniz 📦<br><small>+ Ekle butonuna basın</small></div>`
-    :items.map(i=>`<div class="mc">
-        <div class="mh">
-          <div class="cflag">${TF[i.s.tc]||'🎴'}</div>
-          <div style="flex:1;min-width:0">
-            <div class="cid">${i.sid}${i.s.f?'<span class="fb">✨FOIL</span>':''}</div>
-            <div class="cnm">${i.s.nm}</div>
-          </div>
-          <div class="qc">
-            <button class="qbtn" data-qm="${i.sid}">−</button>
-            <span class="qv">${i.qty}</span>
-            <button class="qbtn" data-qp="${i.sid}">+</button>
-          </div>
+  <div class="scroll">${!items.length?`<div class="empty">Henüz mükerrer eklemediniz 📦<br>+ Ekle butonuna basın</div>`:
+    items.map(i=>`<div class="mc">
+      <div class="mh">
+        <div class="cflag">${TF[i.s.tc]||'🎴'}</div>
+        <div style="flex:1;min-width:0">
+          <div class="cid">${i.sid}${i.s.f?'<span class="fb">✨FOIL</span>':''}</div>
+          <div class="cnm">${i.s.nm}</div>
         </div>
-        ${i.cl.length?`<div class="cr">${i.cl.map((c,idx)=>`<span class="cc" style="background:${getColor(c)}">${idx===0?'👑 ':''}${c}</span>`).join('')}</div>`:''}
-      </div>`).join('')}
+        <div class="qc">
+          <button class="qbtn" data-qm="${i.sid}">−</button>
+          <span class="qv">${i.qty}</span>
+          <button class="qbtn" data-qp="${i.sid}">+</button>
+        </div>
+      </div>
+      ${i.cl.length?`<div class="cr">${i.cl.map((c,idx)=>`<span class="cc" style="background:${getColor(c)}">${idx===0?'👑 ':''}${c}</span>`).join('')}</div>`:''}
+    </div>`).join('')}
   </div>`;
 }
-function rReq(){
+
+// ── TALEPLER (benden onay bekleyen) ──
+function rClaims(){
   const d=S.roomData,u=S.user;
-  const reqs=Object.entries(d.claims||{}).filter(([k])=>k.endsWith(`::${u}`)).map(([k,cl])=>{
+  const items=Object.entries(d.claims||{}).filter(([k])=>k.endsWith('::'+u)).map(([k,cl])=>{
     const[sid]=k.split('::');const s=SM[sid];if(!s)return null;
     const qty=d.duplicates?.[u]?.[sid]||0;
-    return{sid,s,qty,cl:[...cl].sort((a,b)=>(d.received?.[a]||0)-(d.received?.[b]||0))};
+    const sorted=[...cl].sort((a,b)=>(d.received?.[a]||0)-(d.received?.[b]||0));
+    return{sid,s,qty,cl:sorted};
   }).filter(i=>i&&i.cl.length>0);
-  return`<div class="scroll">${!reqs.length
-    ?`<div class="empty">Şu an talep yok 🔔<br><small>Başkaları fazlalıklarını eklediğinde<br>İstiyorum derlerse burada görünür</small></div>`
-    :reqs.map(i=>`<div class="rc">
-        <div class="rh">
-          <div class="cflag">${TF[i.s.tc]||'🎴'}</div>
-          <div style="flex:1">
-            <div class="cid">${i.sid}${i.s.f?'<span class="fb">✨FOIL</span>':''} <span style="font-size:11px;color:#475569">(${i.qty} adet sende)</span></div>
-            <div class="cnm">${i.s.nm}</div>
-          </div>
+
+  return`<div class="scroll">${!items.length?`<div class="empty">Şu an talep yok 🔔<br>Birisi fazlalığını istediğinde burada görünür</div>`:
+    items.map(i=>`<div class="pcard">
+      <div class="mh">
+        <div class="cflag">${TF[i.s.tc]||'🎴'}</div>
+        <div style="flex:1">
+          <div class="cid">${i.sid}${i.s.f?'<span class="fb">✨FOIL</span>':''}</div>
+          <div class="cnm">${i.s.nm} · <span style="color:#64748b">sende ${i.qty} adet</span></div>
         </div>
-        ${i.cl.map((c,idx)=>`<div class="clrow">
-          <span style="font-size:14px">${idx===0?'👑':`${idx+1}.`}</span>
-          <span class="cln" style="background:${getColor(c)}">${c}</span>
-          <span class="rct">${d.received?.[c]||0} aldı</span>
-          <button class="${idx===0?'gb':'gs'}" data-gv="${i.sid}" data-rc="${c}">Ver ✓</button>
+      </div>
+      <div style="margin-top:10px;display:flex;flex-direction:column;gap:6px">
+        ${i.cl.map((c,idx)=>`<div class="prow">
+          <span style="font-size:14px">${idx===0?'👑':(idx+1)+'.'}</span>
+          <span class="pname" style="background:${getColor(c)}">${c}</span>
+          <span style="font-size:11px;color:#475569">${d.received?.[c]||0} aldı</span>
+          <button class="gb" data-send-sid="${i.sid}" data-send-to="${c}">Gönder ✓</button>
         </div>`).join('')}
-      </div>`).join('')}
+      </div>
+    </div>`).join('')}
   </div>`;
 }
-function rPending(){
-  const d=S.roomData,u=S.user;
-  const pending=d.pending||{};
-  const history=(d.history||[]).slice().reverse().slice(0,20);
 
-  const myPending=Object.entries(pending).filter(([k])=>{
-    const[,from,to]=k.split('::');
-    return from===u||to===u;
-  }).map(([k,v])=>({...v,key:k}));
+// ── TAKASLAR (bekleyen ve tamamlanan) ──
+function rTrades(){
+  const d=S.roomData,u=S.user;
+  const trades=Object.entries(d.trades||{});
+  const myTrades=trades.filter(([,t])=>t.from===u||t.to===u).map(([id,t])=>({id,...t}));
+  const pending=myTrades.filter(t=>t.status==='sent');
+  const done=myTrades.filter(t=>t.status==='done').reverse().slice(0,30);
 
   return`<div class="scroll">
-    ${myPending.length===0&&history.length===0?`<div class="empty">Henüz bekleyen takas yok 🤝<br><small>Ver ✓ basıldığında burada görünür</small></div>`:''}
-    ${myPending.length>0?`
-      <div style="font-size:11px;color:#64748b;padding:4px 0;font-weight:600;text-transform:uppercase;letter-spacing:.5px">Teslim Bekleyenler</div>
-      ${myPending.map(p=>{
-        const s=SM[p.sid];
-        const isReceiver=p.to===u;
-        return`<div class="rc">
-          <div class="rh">
+    ${pending.length===0&&done.length===0?`<div class="empty">Henüz takas yok 🤝<br>Talepler sekmesinden "Gönder" bas</div>`:''}
+
+    ${pending.length>0?`
+      <div class="sec-label">📬 Teslim Bekleyenler</div>
+      ${pending.map(t=>{
+        const s=SM[t.sid];
+        const iAmReceiver=t.to===u;
+        return`<div class="pcard">
+          <div class="mh">
             <div class="cflag">${TF[s?.tc]||'🎴'}</div>
             <div style="flex:1">
-              <div class="cid">${p.sid}${s?.f?'<span class="fb">✨FOIL</span>':''}</div>
+              <div class="cid">${t.sid}${s?.f?'<span class="fb">✨FOIL</span>':''}</div>
               <div class="cnm">${s?.nm||''}</div>
             </div>
           </div>
-          <div class="clrow">
-            <span style="font-size:13px">${isReceiver?'📥':'📤'}</span>
-            <span class="cln" style="background:${getColor(isReceiver?p.from:p.to)}">${isReceiver?p.from:p.to}</span>
-            <span class="rct">${isReceiver?'sana gönderdi':'bekliyor'}</span>
-            ${isReceiver?`<button class="gb" data-confirm="${p.key}">Teslim Aldım ✓</button>`:`<span style="font-size:11px;color:#475569">Onay bekleniyor</span>`}
+          <div class="prow" style="margin-top:10px">
+            <span style="font-size:18px">${iAmReceiver?'📥':'📤'}</span>
+            <span class="pname" style="background:${getColor(iAmReceiver?t.from:t.to)}">${iAmReceiver?t.from:t.to}</span>
+            ${iAmReceiver
+              ?`<button class="gb" data-confirm="${t.id}">Teslim Aldım ✓</button>`
+              :`<span class="status-pill status-wait">Onay bekleniyor</span>`}
           </div>
         </div>`;
       }).join('')}
     `:''}
-    ${history.length>0?`
-      <div style="font-size:11px;color:#64748b;padding:8px 0 4px;font-weight:600;text-transform:uppercase;letter-spacing:.5px">Tamamlanan Takaslar</div>
-      ${history.filter(h=>h.from===u||h.to===u).map(h=>{
-        const s=SM[h.sid];
-        const gave=h.from===u;
-        return`<div class="card" style="opacity:.7">
+
+    ${done.length>0?`
+      <div class="sec-label" style="margin-top:8px">✅ Tamamlanan Takaslar</div>
+      ${done.filter(t=>t.from===u||t.to===u).map(t=>{
+        const s=SM[t.sid];
+        const gave=t.from===u;
+        return`<div class="card" style="opacity:.65">
           <div class="cflag">${TF[s?.tc]||'🎴'}</div>
           <div class="cinfo">
-            <div class="cid">${h.sid}${s?.f?'<span class="fb">✨FOIL</span>':''}</div>
+            <div class="cid">${t.sid}${s?.f?'<span class="fb">✨FOIL</span>':''}</div>
             <div class="cnm">${s?.nm||''}</div>
-            <span class="otag" style="background:${getColor(gave?h.to:h.from)}">${gave?'→ '+h.to:'← '+h.from}</span>
+            <span class="otag" style="background:${getColor(gave?t.to:t.from)}">${gave?'→ '+t.to:'← '+t.from}</span>
           </div>
-          <span style="font-size:18px">${gave?'📤':'📥'}</span>
+          <span style="font-size:20px">${gave?'📤':'📥'}</span>
         </div>`;
       }).join('')}
     `:''}
   </div>`;
 }
-function rMoItems(){
+
+// ── MODAL (sticker ekle) ──
+function rModalItems(){
   const mine=S.roomData?.duplicates?.[S.user]||{};
   const q=S.ms.toLowerCase();
   const f=q?ALL.filter(s=>s.id.toLowerCase().includes(q)||s.nm.toLowerCase().includes(q)).slice(0,80):ALL.slice(0,80);
@@ -1616,90 +1573,172 @@ function rModal(){
   return`<div class="modal">
     <div class="modh">
       <button class="modx" id="mClose">✕</button>
-      <input class="mods" id="mSrch" placeholder="Ara... (TUR14, Arda, UZB16...)" value="${S.ms}">
+      <input class="mods" id="mSrch" placeholder="Ara... (TUR14, Arda, BRA...)" value="${S.ms}">
     </div>
-    <div class="scroll" id="mList">${rMoItems()}</div>
+    <div class="scroll" id="mList">${rModalItems()}</div>
   </div>`;
 }
 
-function aMI(){
+// ── EVENT HANDLERS ──
+function aMarket(){
   document.querySelectorAll('[data-cl]').forEach(b=>{b.onclick=()=>{
-    const sid=b.dataset.cl,ow=b.dataset.ow,u=S.user;
-    mut(d=>{const key=`${sid}::${ow}`,prev=d.claims?.[key]||[];return{...d,claims:{...d.claims,[key]:prev.includes(u)?prev.filter(x=>x!==u):[...prev,u]}};});
-    const ml=g('mktL');if(ml){ml.innerHTML=rMI();aMI();}
+    const sid=b.dataset.cl,owner=b.dataset.ow,u=S.user;
+    mut(d=>{
+      const key=sid+'::'+owner;
+      const prev=d.claims?.[key]||[];
+      if(!d.claims)d.claims={};
+      d.claims[key]=prev.includes(u)?prev.filter(x=>x!==u):[...prev,u];
+      return d;
+    });
+    const ml=g('mktL');if(ml){ml.innerHTML=rMarketList();aMarket();}
   };});
 }
-function aMoItems(){
+function aModalItems(){
   document.querySelectorAll('[data-mp]').forEach(b=>{b.onclick=()=>{
     const sid=b.dataset.mp,u=S.user;
-    mut(d=>{const mine={...(d.duplicates?.[u]||{})};mine[sid]=(mine[sid]||0)+1;return{...d,duplicates:{...d.duplicates,[u]:mine}};});
-    const ml=g('mList');if(ml){ml.innerHTML=rMoItems();aMoItems();}
+    mut(d=>{
+      if(!d.duplicates)d.duplicates={};
+      if(!d.duplicates[u])d.duplicates[u]={};
+      d.duplicates[u][sid]=(d.duplicates[u][sid]||0)+1;
+      return d;
+    });
+    const ml=g('mList');if(ml){ml.innerHTML=rModalItems();aModalItems();}
   };});
   document.querySelectorAll('[data-mm]').forEach(b=>{b.onclick=()=>{
     const sid=b.dataset.mm,u=S.user;
-    mut(d=>{const mine={...(d.duplicates?.[u]||{})},nq=(mine[sid]||1)-1,nc={...d.claims};if(nq<=0){delete mine[sid];delete nc[`${sid}::${u}`];}else mine[sid]=nq;return{...d,duplicates:{...d.duplicates,[u]:mine},claims:nc};});
-    const ml=g('mList');if(ml){ml.innerHTML=rMoItems();aMoItems();}
+    mut(d=>{
+      if(!d.duplicates?.[u])return d;
+      const nq=(d.duplicates[u][sid]||1)-1;
+      if(nq<=0){
+        delete d.duplicates[u][sid];
+        if(d.claims&&d.claims[sid+'::'+u])delete d.claims[sid+'::'+u];
+      } else {
+        d.duplicates[u][sid]=nq;
+      }
+      return d;
+    });
+    const ml=g('mList');if(ml){ml.innerHTML=rModalItems();aModalItems();}
   };});
 }
 function aApp(){
-  const roomLink=`${location.origin}${location.pathname}?room=${S.roomId}`;
+  const roomLink=location.origin+location.pathname+'?room='+S.roomId;
+
   g('outBtn')&&(g('outBtn').onclick=()=>{
-    if(confirm('Odadan çıkmak istiyor musun? Tekrar girebilirsin.')){
-      localStorage.removeItem(`takas_user_${S.roomId}`);
+    if(confirm('Odadan çıkmak istiyor musun?')){
+      localStorage.removeItem('takas_user_'+S.roomId);
       if(roomUnsub)roomUnsub();
-      S.user=null;S.screen='landing';S.roomId=null;
+      S.user=null;S.screen='landing';S.roomId=null;S.roomData=null;
       history.pushState({},'',location.pathname);render();
     }
   });
+
   g('shareBtn')&&(g('shareBtn').onclick=()=>{
-    if(navigator.share){navigator.share({title:'Takas Odası',text:`${S.roomData?.name} — katıl!`,url:roomLink});}
-    else{navigator.clipboard.writeText(roomLink).then(()=>showToast('📋 Oda linki kopyalandı!'));}
+    if(navigator.share){
+      navigator.share({title:'Takas Odası',text:(S.roomData?.name||'Takas')+' — katıl!',url:roomLink});
+    } else {
+      navigator.clipboard.writeText(roomLink).then(()=>showToast('📋 Oda linki kopyalandı!'));
+    }
   });
-  g('codeClick')&&(g('codeClick').onclick=()=>{navigator.clipboard.writeText(roomLink).then(()=>showToast('📋 Link kopyalandı!'));});
+
+  g('codeBtn')&&(g('codeBtn').onclick=()=>{
+    navigator.clipboard.writeText(roomLink).then(()=>showToast('📋 Link kopyalandı!'));
+  });
+
+  document.querySelectorAll('[data-tab]').forEach(b=>{b.onclick=()=>{
+    S.tab=b.dataset.tab;S.srch='';S.tf='ALL';render();
+  };});
+
+  // Pazar arama
+  g('srchI')&&(g('srchI').oninput=e=>{
+    S.srch=e.target.value;
+    const ml=g('mktL');if(ml){ml.innerHTML=rMarketList();aMarket();}
+  });
+  document.querySelectorAll('[data-tf]').forEach(b=>{b.onclick=()=>{
+    S.tf=b.dataset.tf;
+    const ml=g('mktL');if(ml){ml.innerHTML=rMarketList();aMarket();}
+  };});
+  aMarket();
+
+  // Fazlalık +/-
   g('addBtn')&&(g('addBtn').onclick=()=>{S.modal=true;S.ms='';render();setTimeout(()=>g('mSrch')&&g('mSrch').focus(),80);});
-  if(g('srchI'))g('srchI').oninput=e=>{S.srch=e.target.value;const ml=g('mktL');if(ml){ml.innerHTML=rMI();aMI();}};
-  document.querySelectorAll('[data-tab]').forEach(b=>{b.onclick=()=>{S.tab=b.dataset.tab;S.srch='';S.tf='ALL';render();};});
-  document.querySelectorAll('[data-tf]').forEach(b=>{b.onclick=()=>{S.tf=b.dataset.tf;const ml=g('mktL');if(ml){ml.innerHTML=rMI();aMI();}};});
-  aMI();
   document.querySelectorAll('[data-qm]').forEach(b=>{b.onclick=()=>{
     const sid=b.dataset.qm,u=S.user;
-    mut(d=>{const mine={...(d.duplicates?.[u]||{})},nq=(mine[sid]||1)-1,nc={...d.claims};if(nq<=0){delete mine[sid];delete nc[`${sid}::${u}`];}else mine[sid]=nq;return{...d,duplicates:{...d.duplicates,[u]:mine},claims:nc};});
-    render();
-  };});
-document.querySelectorAll('[data-gv]').forEach(b=>{b.onclick=()=>{
-    const sid=b.dataset.gv,rc=b.dataset.rc,u=S.user;
     mut(d=>{
-      const mine={...(d.duplicates?.[u]||{})},nq=(mine[sid]||1)-1,nc={...d.claims},key=`${sid}::${u}`;
-      if(nq<=0){delete mine[sid];delete nc[key];}else{mine[sid]=nq;nc[key]=(d.claims?.[key]||[]).filter(x=>x!==rc);}
-      const np={...d.pending};
-      np[`${sid}::${u}::${rc}`]={sid,from:u,to:rc,at:Date.now()};
-      return{...d,duplicates:{...d.duplicates,[u]:mine},claims:nc,pending:np};
+      if(!d.duplicates?.[u])return d;
+      const nq=(d.duplicates[u][sid]||1)-1;
+      if(nq<=0){
+        delete d.duplicates[u][sid];
+        if(d.claims&&d.claims[sid+'::'+u])delete d.claims[sid+'::'+u];
+      } else {d.duplicates[u][sid]=nq;}
+      return d;
     });
     render();
   };});
-  document.querySelectorAll('[data-gv]').forEach(b=>{b.onclick=()=>{
-    const sid=b.dataset.gv,rc=b.dataset.rc,u=S.user;
-    mut(d=>{const mine={...(d.duplicates?.[u]||{})},nq=(mine[sid]||1)-1,nc={...d.claims},key=`${sid}::${u}`;if(nq<=0){delete mine[sid];delete nc[key];}else{mine[sid]=nq;nc[key]=(d.claims?.[key]||[]).filter(x=>x!==rc);}const nr={...d.received};nr[rc]=(nr[rc]||0)+1;return{...d,duplicates:{...d.duplicates,[u]:mine},claims:nc,received:nr};});
+  document.querySelectorAll('[data-qp]').forEach(b=>{b.onclick=()=>{
+    const sid=b.dataset.qp,u=S.user;
+    mut(d=>{
+      if(!d.duplicates)d.duplicates={};
+      if(!d.duplicates[u])d.duplicates[u]={};
+      d.duplicates[u][sid]=(d.duplicates[u][sid]||0)+1;
+      return d;
+    });
     render();
   };});
-  if(g('mClose'))g('mClose').onclick=()=>{S.modal=false;S.ms='';render();};
-  if(g('mSrch'))g('mSrch').oninput=e=>{S.ms=e.target.value;const ml=g('mList');if(ml){ml.innerHTML=rMoItems();aMoItems();}};
-aMoItems();
-  document.querySelectorAll('[data-confirm]').forEach(b=>{b.onclick=()=>{
-    const parts=b.dataset.confirm.split('::');
-    confirmReceived(S.roomId,parts[0],parts[1],parts[2]);
-  };});
-}
 
-function rSetupNeeded(){
-  return`<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;padding:24px;gap:20px;text-align:center">
-    <div style="font-size:48px">⚙️</div>
-    <div style="font-size:20px;font-weight:600">Firebase Ayarlanmadı</div>
-    <div style="color:#64748b;font-size:14px;line-height:1.8;max-width:360px">
-      <code style="background:#1e293b;color:#fbbf24;padding:2px 6px;border-radius:4px">FIREBASE_CONFIG</code> bölümüne Firebase proje bilgilerini yapıştır.<br><br>
-      <a href="https://console.firebase.google.com" target="_blank" style="color:#60a5fa">console.firebase.google.com</a> → Realtime Database → Proje Ayarları → Web
-    </div>
-  </div>`;
+  // Talepler — Gönder butonu
+  // Verici "Gönder ✓" basar → trade oluşur, status:'sent'
+  document.querySelectorAll('[data-send-sid]').forEach(b=>{b.onclick=()=>{
+    const sid=b.dataset.sendSid,to=b.dataset.sendTo,u=S.user;
+    mut(d=>{
+      // Fazlalıktan düş
+      if(d.duplicates?.[u]?.[sid]){
+        const nq=d.duplicates[u][sid]-1;
+        if(nq<=0){
+          delete d.duplicates[u][sid];
+        } else {
+          d.duplicates[u][sid]=nq;
+        }
+      }
+      // Talebi kaldır
+      const clKey=sid+'::'+u;
+      if(d.claims?.[clKey]){
+        d.claims[clKey]=d.claims[clKey].filter(x=>x!==to);
+        if(d.claims[clKey].length===0)delete d.claims[clKey];
+      }
+      // Trade oluştur
+      if(!d.trades)d.trades={};
+      const tradeId='t'+Date.now();
+      d.trades[tradeId]={sid,from:u,to,status:'sent',sentAt:Date.now()};
+      return d;
+    });
+    showToast('📤 Gönderildi! '+to+' onaylamasını bekle.');
+    render();
+  };});
+
+  // Takaslar — Teslim Aldım butonu
+  // Alıcı "Teslim Aldım ✓" basar → status:'done'
+  document.querySelectorAll('[data-confirm]').forEach(b=>{b.onclick=()=>{
+    const tradeId=b.dataset.confirm,u=S.user;
+    mut(d=>{
+      if(!d.trades?.[tradeId])return d;
+      d.trades[tradeId].status='done';
+      d.trades[tradeId].doneAt=Date.now();
+      // received sayacı artır
+      if(!d.received)d.received={};
+      d.received[u]=(d.received[u]||0)+1;
+      return d;
+    });
+    showToast('✅ Takas tamamlandı!');
+    render();
+  };});
+
+  // Modal
+  g('mClose')&&(g('mClose').onclick=()=>{S.modal=false;S.ms='';render();});
+  g('mSrch')&&(g('mSrch').oninput=e=>{
+    S.ms=e.target.value;
+    const ml=g('mList');if(ml){ml.innerHTML=rModalItems();aModalItems();}
+  });
+  aModalItems();
 }
 
 init();
