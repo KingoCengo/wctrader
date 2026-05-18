@@ -1210,6 +1210,20 @@ function mut(fn){
   saveRoom(S.roomId,S.roomData);
   flashSave();
 }
+function confirmReceived(roomId, sid, from, to){
+  if(!S.roomData)return;
+  const d=JSON.parse(JSON.stringify(S.roomData));
+  const pending=d.pending||{};
+  const key=`${sid}::${from}::${to}`;
+  delete pending[key];
+  if(!d.history)d.history=[];
+  d.history.push({sid,from,to,at:Date.now()});
+  d.pending=pending;
+  S.roomData=d;
+  saveRoom(roomId,d);
+  flashSave();
+  render();
+}
 function flashSave(){const d=g('sd');if(d){d.classList.add('on');setTimeout(()=>d.classList.remove('on'),1500);}}
 function showToast(msg){const t=g('toast');if(!t)return;t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2000);}
 
@@ -1386,6 +1400,16 @@ function pnd(){
     return o===S.user&&(S.roomData.claims[k]||[]).length>0;
   }).length;
 }
+
+function pnd2(){
+  if(!S.roomData||!S.user)return 0;
+  const pending=S.roomData.pending||{};
+  return Object.keys(pending).filter(k=>{
+    const[,from,to]=k.split('::');
+    return to===S.user;
+  }).length;
+}
+  
 function getColor(name){return userColor(name,S.roomData?.members||{});}
 
 function rApp(){
@@ -1415,9 +1439,11 @@ function rApp(){
       ${S.tab==='market'?rMarket():''}
       ${S.tab==='mine'?rMine():''}
       ${S.tab==='req'?rReq():''}
+${S.tab==='pending'?rPending():''}
     </div>
     <div class="bnav">
-      ${[{id:'market',ic:'🏪',lb:'Pazar'},{id:'mine',ic:'📦',lb:'Fazlalıklarım'},{id:'req',ic:'🔔',lb:'Talepler',bd:n}].map(t=>`
+    const n2=pnd2();
+${[{id:'market',ic:'🏪',lb:'Pazar'},{id:'mine',ic:'📦',lb:'Fazlalıklarım'},{id:'req',ic:'🔔',lb:'Talepler',bd:n},{id:'pending',ic:'🤝',lb:'Bekleyenler',bd:n2}].map(
         <button class="nb${S.tab===t.id?' on':''}" data-tab="${t.id}">
           <span class="ni">${t.ic}</span><span>${t.lb}</span>
           ${(t.bd||0)>0?`<span class="bdg">${t.bd}</span>`:''}
@@ -1519,6 +1545,58 @@ function rReq(){
       </div>`).join('')}
   </div>`;
 }
+function rPending(){
+  const d=S.roomData,u=S.user;
+  const pending=d.pending||{};
+  const history=(d.history||[]).slice().reverse().slice(0,20);
+
+  const myPending=Object.entries(pending).filter(([k])=>{
+    const[,from,to]=k.split('::');
+    return from===u||to===u;
+  }).map(([k,v])=>({...v,key:k}));
+
+  return`<div class="scroll">
+    ${myPending.length===0&&history.length===0?`<div class="empty">Henüz bekleyen takas yok 🤝<br><small>Ver ✓ basıldığında burada görünür</small></div>`:''}
+    ${myPending.length>0?`
+      <div style="font-size:11px;color:#64748b;padding:4px 0;font-weight:600;text-transform:uppercase;letter-spacing:.5px">Teslim Bekleyenler</div>
+      ${myPending.map(p=>{
+        const s=SM[p.sid];
+        const isReceiver=p.to===u;
+        return`<div class="rc">
+          <div class="rh">
+            <div class="cflag">${TF[s?.tc]||'🎴'}</div>
+            <div style="flex:1">
+              <div class="cid">${p.sid}${s?.f?'<span class="fb">✨FOIL</span>':''}</div>
+              <div class="cnm">${s?.nm||''}</div>
+            </div>
+          </div>
+          <div class="clrow">
+            <span style="font-size:13px">${isReceiver?'📥':'📤'}</span>
+            <span class="cln" style="background:${getColor(isReceiver?p.from:p.to)}">${isReceiver?p.from:p.to}</span>
+            <span class="rct">${isReceiver?'sana gönderdi':'bekliyor'}</span>
+            ${isReceiver?`<button class="gb" data-confirm="${p.key}">Teslim Aldım ✓</button>`:`<span style="font-size:11px;color:#475569">Onay bekleniyor</span>`}
+          </div>
+        </div>`;
+      }).join('')}
+    `:''}
+    ${history.length>0?`
+      <div style="font-size:11px;color:#64748b;padding:8px 0 4px;font-weight:600;text-transform:uppercase;letter-spacing:.5px">Tamamlanan Takaslar</div>
+      ${history.filter(h=>h.from===u||h.to===u).map(h=>{
+        const s=SM[h.sid];
+        const gave=h.from===u;
+        return`<div class="card" style="opacity:.7">
+          <div class="cflag">${TF[s?.tc]||'🎴'}</div>
+          <div class="cinfo">
+            <div class="cid">${h.sid}${s?.f?'<span class="fb">✨FOIL</span>':''}</div>
+            <div class="cnm">${s?.nm||''}</div>
+            <span class="otag" style="background:${getColor(gave?h.to:h.from)}">${gave?'→ '+h.to:'← '+h.from}</span>
+          </div>
+          <span style="font-size:18px">${gave?'📤':'📥'}</span>
+        </div>`;
+      }).join('')}
+    `:''}
+  </div>`;
+}
 function rMoItems(){
   const mine=S.roomData?.duplicates?.[S.user]||{};
   const q=S.ms.toLowerCase();
@@ -1588,9 +1666,15 @@ function aApp(){
     mut(d=>{const mine={...(d.duplicates?.[u]||{})},nq=(mine[sid]||1)-1,nc={...d.claims};if(nq<=0){delete mine[sid];delete nc[`${sid}::${u}`];}else mine[sid]=nq;return{...d,duplicates:{...d.duplicates,[u]:mine},claims:nc};});
     render();
   };});
-  document.querySelectorAll('[data-qp]').forEach(b=>{b.onclick=()=>{
-    const sid=b.dataset.qp,u=S.user;
-    mut(d=>{const mine={...(d.duplicates?.[u]||{})};mine[sid]=(mine[sid]||0)+1;return{...d,duplicates:{...d.duplicates,[u]:mine}};});
+document.querySelectorAll('[data-gv]').forEach(b=>{b.onclick=()=>{
+    const sid=b.dataset.gv,rc=b.dataset.rc,u=S.user;
+    mut(d=>{
+      const mine={...(d.duplicates?.[u]||{})},nq=(mine[sid]||1)-1,nc={...d.claims},key=`${sid}::${u}`;
+      if(nq<=0){delete mine[sid];delete nc[key];}else{mine[sid]=nq;nc[key]=(d.claims?.[key]||[]).filter(x=>x!==rc);}
+      const np={...d.pending};
+      np[`${sid}::${u}::${rc}`]={sid,from:u,to:rc,at:Date.now()};
+      return{...d,duplicates:{...d.duplicates,[u]:mine},claims:nc,pending:np};
+    });
     render();
   };});
   document.querySelectorAll('[data-gv]').forEach(b=>{b.onclick=()=>{
@@ -1600,7 +1684,11 @@ function aApp(){
   };});
   if(g('mClose'))g('mClose').onclick=()=>{S.modal=false;S.ms='';render();};
   if(g('mSrch'))g('mSrch').oninput=e=>{S.ms=e.target.value;const ml=g('mList');if(ml){ml.innerHTML=rMoItems();aMoItems();}};
-  aMoItems();
+aMoItems();
+  document.querySelectorAll('[data-confirm]').forEach(b=>{b.onclick=()=>{
+    const parts=b.dataset.confirm.split('::');
+    confirmReceived(S.roomId,parts[0],parts[1],parts[2]);
+  };});
 }
 
 function rSetupNeeded(){
