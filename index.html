@@ -1204,7 +1204,11 @@ let S={
 // Auto-login from localStorage
 if(S.roomId){
   const saved=localStorage.getItem(`takas_user_${S.roomId}`);
-  if(saved){S.user=saved;S.screen='app';}
+  if(saved){
+    S.user=saved;
+    S.screen='app';
+    subscribeRoom(S.roomId,d=>{if(d){S.roomData=d;}render();});
+  }
 }
 
 function mut(fn){
